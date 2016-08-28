@@ -1,61 +1,78 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+/**
+ * Created by Corey600 on 2016/7/11.
+ *
+ * environment variable:
+ * the port: $PORT=3500
+ * the config dir: $NODE_CONFIG_DIR=./config
+ *
+ */
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
+'use strict'
 
-var app = express();
+// require core modules
+const path = require('path')
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hbs');
+// require thirdpart modules
+const config = require('config')
+const Koa = require('koa')
+const sta = require('koa-static')
+const json = require('koa-json')
+const bodyparser = require('koa-bodyparser')
 
-// uncomment after placing your favicon in /public
-app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(require('less-middleware')(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'public')));
+// require custom modules
+const hbs = require('./lib/common/hbs')
+const log = require('./lib/common/log')
 
-app.use('/', routes);
-app.use('/users', users);
+var app = new Koa()
+var logger = log.getLogger(__filename)
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
+var staticPath = path.join(__dirname, 'dist')
+var viewPath = path.join(__dirname, 'views')
 
-// error handlers
+// set app name
+app.name = config.has('app') ? config.get('app') : 'server'
 
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
-  });
+// global middlewares
+app.use(sta(staticPath, {
+  maxage: 100 * 365 * 24 * 60 * 60
+}))
+app.use(log.getConnect())
+app.use(hbs.middleware({
+  viewPath: viewPath,
+  partialsPath: path.join(viewPath, 'partials'),
+  layoutsPath: path.join(viewPath, 'layouts'),
+  disableCache: config.has('templateCache') ? (!config.get('templateCache')) : false,
+  defaultLayout: null
+}))
+app.use(json())
+//noinspection JSUnusedGlobalSymbols
+app.use(bodyparser({
+  onerror: function (err, ctx) {
+    // HTTP Error: 422 Unprocessable Entity
+    ctx.throw('body parse error', 422)
+  }
+}))
+
+// mount root routes
+var router = require('./lib/routes').router
+app.use(router.routes())
+
+// Not Found 404
+app.use(pageNotFound)
+function* pageNotFound() {
+  //noinspection JSUnusedGlobalSymbols
+  this.status = 404
+  if(this.request.method.toUpperCase() == 'GET'){
+    return yield this.render('404')
+  }else{
+    //noinspection JSUnusedGlobalSymbols
+    return this.body = 'Not Found'
+  }
 }
 
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
-});
+// error
+app.on('error', function(err, ctx){
+  log.error('server error.\n', err.stack, '\ncontext: ', JSON.stringify(ctx))
+})
 
-
-module.exports = app;
+module.exports.app = app

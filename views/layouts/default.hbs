@@ -1,0 +1,26 @@
+{{! 默认模板布局 }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    {{!-- 设置浏览器兼容模式,启用GCF --}}
+    <meta http-equiv="X-UA-Compatible" content="chrome=1"/>
+    {{!-- 标题 --}}
+    <title>{{title}}</title>
+    {{!-- 公共样式 --}}
+    <link rel="icon" type="image/x-icon" href="{{path 'favicon.ico'}}"/>
+    <link rel="stylesheet" href="{{path 'common/styles/style.less'}}"/>
+    {{!-- 页面私有样式 --}}
+    {{{block "stylesheets"}}}
+</head>
+<body>
+{{!-- 内容主体 --}}
+{{{body}}}
+{{!-- 底部信息 --}}
+{{> footer}}
+{{!-- 公共脚本 --}}
+<script src="{{path 'common/js/common.js'}}"></script>
+{{!-- 页面私有脚本 --}}
+{{{block "scripts"}}}
+</body>
+</html>
