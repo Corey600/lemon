@@ -9,9 +9,9 @@ var http = require('http')
 var config = require('config')
 
 var app = require('../app').app
+var version = require('../package.json').version
 var logger = require('../lib/common/log').getLogger(path.basename(__filename))
 
-var version = require('../package.json').version
 logger.info('VERSION:', version, ', NODE_ENV:', app.env, ', NODE_CONFIG_DIR:', process.env.NODE_CONFIG_DIR)
 logger.info('Config path:', config.get('configPath'))
 

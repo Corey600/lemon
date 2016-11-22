@@ -9,7 +9,6 @@
 'use strict'
 
 const path = require('path')
-const root = process.cwd() // 进程运行当前目录
 
 module.exports = {
   // 应用

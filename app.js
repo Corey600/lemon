@@ -20,7 +20,7 @@ const json = require('koa-json')
 const bodyparser = require('koa-bodyparser')
 
 // require custom modules
-const hbs = require('./lib/common/hbs')
+const hbs = require('./lib/common/hbs').hbs
 const log = require('./lib/common/log')
 
 var app = new Koa()
@@ -33,6 +33,7 @@ var viewPath = path.join(__dirname, 'views')
 app.name = config.has('app') ? config.get('app') : 'server'
 
 // global middlewares
+//noinspection JSCheckFunctionSignatures
 app.use(sta(staticPath, {
   maxage: 100 * 365 * 24 * 60 * 60
 }))
@@ -44,7 +45,7 @@ app.use(hbs.middleware({
   disableCache: config.has('templateCache') ? (!config.get('templateCache')) : false,
   defaultLayout: null
 }))
-app.use(json())
+app.use(json(null))
 //noinspection JSUnusedGlobalSymbols
 app.use(bodyparser({
   onerror: function (err, ctx) {
@@ -58,8 +59,7 @@ var router = require('./lib/routes').router
 app.use(router.routes())
 
 // Not Found 404
-app.use(pageNotFound)
-function* pageNotFound() {
+app.use(function* pageNotFound() {
   //noinspection JSUnusedGlobalSymbols
   this.status = 404
   if(this.request.method.toUpperCase() == 'GET'){
@@ -68,11 +68,12 @@ function* pageNotFound() {
     //noinspection JSUnusedGlobalSymbols
     return this.body = 'Not Found'
   }
-}
+})
 
 // error
+//noinspection JSUnresolvedFunction
 app.on('error', function(err, ctx){
-  log.error('server error.\n', err.stack, '\ncontext: ', JSON.stringify(ctx))
+  logger.error('server error.\n', err.stack, '\ncontext: ', JSON.stringify(ctx))
 })
 
 module.exports.app = app
