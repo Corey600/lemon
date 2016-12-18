@@ -17,6 +17,8 @@
     "lodash": "^4.13.1",
     "log4js": "^0.6.37",
     "node-uuid": "^1.4.7",
+    "passport": "^0.3.2",
+    "passport-github": "^1.1.0",
     "react": "^15.2.1"
   },
   "devDependencies": {

@@ -22,6 +22,7 @@ const bodyparser = require('koa-bodyparser')
 // require custom modules
 const hbs = require('./lib/common/hbs').hbs
 const log = require('./lib/common/log')
+const passport = require('./lib/common/passport')
 
 var app = new Koa()
 var logger = log.getLogger(__filename)
@@ -53,6 +54,9 @@ app.use(bodyparser({
     ctx.throw('body parse error', 422)
   }
 }))
+
+// init passport
+passport.init(app)
 
 // mount root routes
 var router = require('./lib/routes').router
