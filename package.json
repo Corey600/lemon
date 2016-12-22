@@ -23,7 +23,11 @@
   },
   "devDependencies": {
     "del": "^2.2.2",
+    "extract-text-webpack-plugin": "^1.0.1",
     "gulp": "^3.9.1",
-    "gulp-eslint": "^3.0.1"
+    "gulp-eslint": "^3.0.1",
+    "gulp-util": "^3.0.7",
+    "html-webpack-plugin": "^2.24.1",
+    "webpack": "^1.14.0"
   }
 }

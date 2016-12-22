@@ -28,3 +28,6 @@ node_modules
 
 # Webstorm
 .idea
+
+# build output
+dist
