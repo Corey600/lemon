@@ -46,7 +46,7 @@ gulp.task('favicon', function () {
   return gulp.src([
     'public/favicon.ico'
   ], { cwd: SRC_DIR })
-    .pipe(gulp.dest(DEST_DIR))
+    .pipe(gulp.dest(path.join(DEST_DIR, 'public')))
 })
 
 /**

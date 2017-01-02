@@ -1,7 +1,7 @@
 /**
  * Created by Corey600 on 2016/12/21.
  */
- 
+
 'use strict'
 
 const path = require('path')
@@ -10,6 +10,7 @@ const gutil = require('gulp-util')
 const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ManifestWebpackPlugin = require('./manifest-webpack-plugin')
 
 /**
  * 获取 webpack 配置
@@ -48,7 +49,9 @@ module.exports.getWebpackConfig = function getWebpackConfig(src, dest) {
       }),
       new webpack.optimize.OccurrenceOrderPlugin(true),
       // 将样式抽离出来作为单独的文件
-      new ExtractTextPlugin('[name]-[contenthash:8].css')
+      new ExtractTextPlugin('[name]-[contenthash:8].css'),
+      // 输出 manifest 文件
+      new ManifestWebpackPlugin(path.resolve(dest, 'manifest/manifest.json'))
     ]
   }
 
@@ -70,6 +73,7 @@ module.exports.getWebpackConfig = function getWebpackConfig(src, dest) {
 
   return config
 }
+
 /**
  * webpack release 构建回调
  * @param  {Error}   err      [description]
