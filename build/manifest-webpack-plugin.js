@@ -49,7 +49,7 @@ ManifestWebpackPlugin.prototype.apply = function(compiler){
     var manifestPath = path.dirname(that.filename)
     fs.mkdir(manifestPath, 0o755, function () {
       gutil.log('create webpack-manifest file...')
-      fs.writeFile(path.resolve(that.filename), JSON.stringify(obj), function (e) {
+      fs.writeFile(path.resolve(that.filename), JSON.stringify(obj, null, 2), function (e) {
         if (e) throw e
       })
     })

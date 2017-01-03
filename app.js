@@ -22,7 +22,7 @@ const bodyparser = require('koa-bodyparser')
 // require custom modules
 const hbs = require('./lib/common/hbs').hbs
 const log = require('./lib/common/log')
-const passport = require('./lib/common/passport')
+const staticMap = require('./lib/common/map')
 
 var app = new Koa()
 var logger = log.getLogger(__filename)
@@ -55,8 +55,10 @@ app.use(bodyparser({
   }
 }))
 
-// init passport
-passport.init(app)
+// Initialize static file path map
+staticMap.init([
+  path.join(staticPath, 'manifest/manifest.json')
+])
 
 // mount root routes
 var router = require('./lib/routes').router

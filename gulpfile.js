@@ -20,7 +20,7 @@ const DEST_DIR = path.join(SRC_DIR, 'dist')
  * @type {task}
  */
 gulp.task('clean', () => {
-  del([DEST_DIR + '/*'])
+  return del([DEST_DIR + '/*'])
 })
 
 /**
@@ -42,7 +42,7 @@ gulp.task('eslint', () => {
  * 拷贝 favicon.ico
  * @type {task}
  */
-gulp.task('favicon', function () {
+gulp.task('favicon', ['clean'], function () {
   return gulp.src([
     'public/favicon.ico'
   ], { cwd: SRC_DIR })
