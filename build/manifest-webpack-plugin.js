@@ -7,7 +7,7 @@
 const fs = require('fs')
 const path = require('path')
 const gutil = require('gulp-util')
-const tempPath = path.resolve(__dirname, '../public')
+const tempPath = path.resolve(__dirname, '../')
 
 /**
  * webpack 生成 manifest 插件

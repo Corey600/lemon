@@ -2,13 +2,19 @@
 {{!< default }}
 
 {{#contentFor "stylesheets"}}
-<link rel='stylesheet' href='{{{path 'pages/console/index/index.less'}}}' />
+<link rel='stylesheet' href='{{{path 'public/pages/console/index/index.less'}}}' />
 {{/contentFor}}
 
 {{!-- 模板body BEGIN --}}
-<div id="page">{{username}};{{displayName}}</div>
+<div id="page">
+  <p>{{username}};{{displayName}}</p>
+  <!-- <p>{{info}}</p> -->
+</div>
 {{!-- 模板body END --}}
 
 {{#contentFor "scripts"}}
-<script src="{{{path 'pages/console/index/index.js'}}}"></script>
+<script src="{{{path 'public/pages/console/index/index.js'}}}"></script>
+<script>
+console.log(JSON.parse('{{info}}'));
+</script>
 {{/contentFor}}

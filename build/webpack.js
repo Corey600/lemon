@@ -43,7 +43,7 @@ module.exports.getWebpackConfig = function getWebpackConfig(src, dest) {
     plugins: [
       // 将公共代码抽离出来合并为一个文件
       new webpack.optimize.CommonsChunkPlugin({
-        name: 'common',
+        name: 'public/common/common',
         filename: 'public/common/common-[hash:8].js',
         minChunks: 3
       }),
@@ -58,7 +58,7 @@ module.exports.getWebpackConfig = function getWebpackConfig(src, dest) {
   // 配置页面生成和入口脚本文件
   let entry = config.entry
   let plugins = config.plugins
-  let htmlfiles = glob.sync('**/console/**/*.hbs', { cwd: path.join(src, 'views', 'pages') })
+  let htmlfiles = glob.sync('**/*.hbs', { cwd: path.join(src, 'views', 'pages') })
   htmlfiles.forEach(function (item) {
     let basename = path.basename(item, '.hbs')
     let chunkname = 'public/pages/' + item.replace(/\.hbs/, '/' + basename)

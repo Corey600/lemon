@@ -8,8 +8,8 @@
     {{!-- 标题 --}}
     <title>{{title}}</title>
     {{!-- 公共样式 --}}
-    <link rel="icon" type="image/x-icon" href="{{path 'favicon.ico'}}"/>
-    <link rel="stylesheet" href="{{path 'common/styles/style.less'}}"/>
+    <link rel="icon" type="image/x-icon" href="/public/favicon.ico"/>
+    <link rel="stylesheet" href="{{path 'public/common/common.less'}}"/>
     {{!-- 页面私有样式 --}}
     {{{block "stylesheets"}}}
 </head>
@@ -19,7 +19,7 @@
 {{!-- 底部信息 --}}
 {{> footer}}
 {{!-- 公共脚本 --}}
-<script src="{{path 'common/js/common.js'}}"></script>
+<script src="{{path 'public/common/common.js'}}"></script>
 {{!-- 页面私有脚本 --}}
 {{{block "scripts"}}}
 </body>
