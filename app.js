@@ -18,11 +18,13 @@ const Koa = require('koa')
 const sta = require('koa-static')
 const json = require('koa-json')
 const bodyparser = require('koa-bodyparser')
+const session = require('koa-generic-session')
 
 // require custom modules
 const hbs = require('./lib/common/hbs').hbs
 const log = require('./lib/common/log')
 const staticMap = require('./lib/common/map')
+const passport = require('./lib/common/passport')
 
 var app = new Koa()
 var logger = log.getLogger(__filename)
@@ -55,10 +57,17 @@ app.use(bodyparser({
   }
 }))
 
+// Sessions
+app.keys = ['secret']
+app.use(session())
+
 // Initialize static file path map
 staticMap.init([
   path.join(staticPath, 'manifest/manifest.json')
 ])
+
+// Init passport
+passport.init(app)
 
 // mount root routes
 var router = require('./lib/routes').router
