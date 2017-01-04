@@ -1,0 +1,14 @@
+{{!-- 使用默认模板布局 --}}
+{{!< default }}
+
+{{#contentFor "stylesheets"}}
+<link rel='stylesheet' href='{{{path 'pages/console/index/index.less'}}}' />
+{{/contentFor}}
+
+{{!-- 模板body BEGIN --}}
+<div id="page">{{username}};{{displayName}}</div>
+{{!-- 模板body END --}}
+
+{{#contentFor "scripts"}}
+<script src="{{{path 'pages/console/index/index.js'}}}"></script>
+{{/contentFor}}
