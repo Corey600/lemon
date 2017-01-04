@@ -1,3 +1,3 @@
 
-require('../../../common/common.less')
+require('../../../common/common.js')
 require('./index.less')

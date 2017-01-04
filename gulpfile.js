@@ -87,7 +87,7 @@ gulp.task('debug', ['clean', 'eslint', 'favicon'], function (done) {
 
   // 执行 webpack
   webpack(config, function (err, stats) {
-    webpackUtils.releaseCallback(err, stats, callback)
+    webpackUtils.debugCallback(err, stats, callback)
     callback = null
   })
 })
