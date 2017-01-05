@@ -10,6 +10,7 @@ const gulp = require('gulp')
 const eslint = require('gulp-eslint')
 const webpack = require('webpack')
 const webpackUtils = require('./build/webpack')
+const eslintrc = require('./build/eslintrc')
 
 // 常量定义
 const SRC_DIR = __dirname
@@ -24,9 +25,39 @@ gulp.task('clean', () => {
 })
 
 /**
+ * 浏览器脚本 ES 语法检查
+ * @type {task}
+ */
+gulp.task('eslint-browser', function() {
+  return gulp.src([
+    'public/**/*.js'
+  ], { cwd: SRC_DIR })
+    .pipe(eslint(eslintrc.getBrowser()))
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError())
+})
+
+/**
+ * 服务端脚本 ES 语法检查
+ * @type {task}
+ */
+gulp.task('eslint-node', function() {
+  return gulp.src([
+    '**/*.js',
+    '!dist/**',
+    '!public/**/*.js',
+    '!node_modules/**'
+  ], { cwd: SRC_DIR })
+    .pipe(eslint(eslintrc.getBrowser()))
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError())
+})
+
+/**
  * 语法检查
  * @type {task}
  */
+//gulp.task('eslint', ['eslint-node', 'eslint-browser'])
 gulp.task('eslint', () => {
   return gulp.src([
     '**/*.js',

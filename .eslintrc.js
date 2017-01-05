@@ -1,3 +1,8 @@
+
+// const config = require('./build/eslintrc')
+//
+// module.exports = config.getNode()
+
 module.exports = {
   "parserOptions": {
     "ecmaVersion": 6,

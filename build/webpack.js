@@ -9,7 +9,6 @@ const glob = require('glob')
 const gutil = require('gulp-util')
 const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ManifestWebpackPlugin = require('./manifest-webpack-plugin')
 
 /**
@@ -57,18 +56,11 @@ module.exports.getWebpackConfig = function getWebpackConfig(src, dest) {
 
   // 配置页面生成和入口脚本文件
   let entry = config.entry
-  let plugins = config.plugins
   let htmlfiles = glob.sync('**/*.hbs', { cwd: path.join(src, 'views', 'pages') })
   htmlfiles.forEach(function (item) {
     let basename = path.basename(item, '.hbs')
     let chunkname = 'public/pages/' + item.replace(/\.hbs/, '/' + basename)
     entry[chunkname] = './' + chunkname + '.js'
-    // plugins.push(new HtmlWebpackPlugin({
-    //   filename: (item == 'index.html' ? '' : 'html/') + item,
-    //   template: path.join(TEMP_DIR, item),
-    //   chunks: ['common', chunkname],
-    //   minify: false
-    // }))
   })
 
   return config

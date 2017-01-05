@@ -6,7 +6,9 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "bootstrap": "^3.3.7",
     "config": "^1.21.0",
+    "glob": "^7.1.1",
     "hbs": "~3.1.0",
     "koa": "^1.2.0",
     "koa-bodyparser": "^2.2.0",
@@ -22,7 +24,9 @@
     "normalize.css": "^5.0.0",
     "passport": "^0.3.2",
     "passport-github": "^1.1.0",
-    "react": "^15.2.1"
+    "react": "^15.2.1",
+    "react-bootstrap": "^0.30.7",
+    "react-dom": "^15.4.1"
   },
   "devDependencies": {
     "css-loader": "^0.26.1",
