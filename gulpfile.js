@@ -9,8 +9,7 @@ const del = require('del')
 const gulp = require('gulp')
 const eslint = require('gulp-eslint')
 const webpack = require('webpack')
-const webpackUtils = require('./build/webpack')
-const eslintrc = require('./build/eslintrc')
+const webpackConfig = require('./webpack.config')
 
 // 常量定义
 const SRC_DIR = __dirname
@@ -20,87 +19,51 @@ const DEST_DIR = path.join(SRC_DIR, 'dist')
  * 清理构建目标目录
  * @type {task}
  */
-gulp.task('clean', () => {
-  return del([DEST_DIR + '/*'])
-})
-
-/**
- * 浏览器脚本 ES 语法检查
- * @type {task}
- */
-gulp.task('eslint-browser', function() {
-  return gulp.src([
-    'public/**/*.js'
-  ], { cwd: SRC_DIR })
-    .pipe(eslint(eslintrc.getBrowser()))
-    .pipe(eslint.format())
-    .pipe(eslint.failAfterError())
-})
-
-/**
- * 服务端脚本 ES 语法检查
- * @type {task}
- */
-gulp.task('eslint-node', function() {
-  return gulp.src([
-    '**/*.js',
-    '!dist/**',
-    '!public/**/*.js',
-    '!node_modules/**'
-  ], { cwd: SRC_DIR })
-    .pipe(eslint(eslintrc.getBrowser()))
-    .pipe(eslint.format())
-    .pipe(eslint.failAfterError())
-})
+gulp.task('clean', () => del([`${DEST_DIR}/*`]))
 
 /**
  * 语法检查
  * @type {task}
  */
-//gulp.task('eslint', ['eslint-node', 'eslint-browser'])
-gulp.task('eslint', () => {
-  return gulp.src([
-    '**/*.js',
-    '!dist/**',
-    '!node_modules/**'
-  ], { cwd: SRC_DIR })
-    .pipe(eslint('./.eslintrc.js'))
-    .pipe(eslint.format())
-    .pipe(eslint.failAfterError())
-})
+gulp.task('eslint', () => gulp.src([
+  '**/*.js',
+  '!dist/**',
+  '!node_modules/**',
+], { cwd: SRC_DIR })
+.pipe(eslint('./.eslintrc.js'))
+.pipe(eslint.format())
+.pipe(eslint.failAfterError()))
 
 /**
  * 拷贝 favicon.ico
  * @type {task}
  */
-gulp.task('favicon', ['clean'], function () {
-  return gulp.src([
-    'public/favicon.ico'
-  ], { cwd: SRC_DIR })
-    .pipe(gulp.dest(path.join(DEST_DIR, 'public')))
-})
+gulp.task('favicon', ['clean'], () => gulp.src([
+  'public/favicon.ico',
+], { cwd: SRC_DIR })
+.pipe(gulp.dest(path.join(DEST_DIR, 'public'))))
 
 /**
  * webpack release 打包
  * @type {task}
  */
-gulp.task('release', ['clean', 'eslint', 'favicon'], function (done) {
-  var callback = done
-  var config = webpackUtils.getWebpackConfig(SRC_DIR, DEST_DIR)
+gulp.task('release', ['clean', 'eslint', 'favicon'], (done) => {
+  const config = webpackConfig.getWebpackConfig(SRC_DIR, DEST_DIR)
 
   // js文件的压缩
   config.plugins.push(new webpack.optimize.UglifyJsPlugin({
     compress: {
-      warnings: false
+      warnings: false,
     },
     mangle: {
-      except: ['$', 'm', 'window', 'webpackJsonpCallback']
-    }
+      except: ['$', 'm', 'window', 'webpackJsonpCallback'],
+    },
   }))
 
   // 执行 webpack
-  webpack(config, function (err, stats) {
-    webpackUtils.releaseCallback(err, stats, callback)
+  let callback = done
+  webpack(config, (err, stats) => {
+    webpackConfig.releaseCallback(err, stats, callback)
     callback = null
   })
 })
@@ -109,16 +72,16 @@ gulp.task('release', ['clean', 'eslint', 'favicon'], function (done) {
  * webpack debug 打包
  * @type {task}
  */
-gulp.task('debug', ['clean', 'eslint', 'favicon'], function (done) {
-  var callback = done
-  var config = webpackUtils.getWebpackConfig(SRC_DIR, DEST_DIR)
-  
+gulp.task('debug', ['clean', 'eslint', 'favicon'], (done) => {
+  const config = webpackConfig.getWebpackConfig(SRC_DIR, DEST_DIR)
+
   // 开启监听
   config.watch = true
 
   // 执行 webpack
-  webpack(config, function (err, stats) {
-    webpackUtils.debugCallback(err, stats, callback)
+  let callback = done
+  webpack(config, (err, stats) => {
+    webpackConfig.debugCallback(err, stats, callback)
     callback = null
   })
 })

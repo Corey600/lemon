@@ -23,38 +23,36 @@ const session = require('koa-generic-session')
 // require custom modules
 const hbs = require('./lib/common/hbs').hbs
 const log = require('./lib/common/log')
-const staticMap = require('./lib/common/map')
+const staticMap = require('./lib/common/static-map')
 const passport = require('./lib/common/passport')
 
-var app = new Koa()
-var logger = log.getLogger(__filename)
+const app = new Koa()
+const logger = log.getLogger(__filename)
 
-var staticPath = path.join(__dirname, 'dist')
-var viewPath = path.join(__dirname, 'views')
+const staticPath = path.join(__dirname, 'dist')
+const viewPath = path.join(__dirname, 'views')
 
 // set app name
 app.name = config.has('app') ? config.get('app') : 'server'
 
 // global middlewares
-//noinspection JSCheckFunctionSignatures
 app.use(sta(staticPath, {
-  maxage: 100 * 365 * 24 * 60 * 60
+  maxage: 100 * 365 * 24 * 60 * 60,
 }))
 app.use(log.getConnect())
 app.use(hbs.middleware({
-  viewPath: viewPath,
+  viewPath,
   partialsPath: path.join(viewPath, 'partials'),
   layoutsPath: path.join(viewPath, 'layouts'),
   disableCache: config.has('templateCache') ? (!config.get('templateCache')) : false,
-  defaultLayout: null
+  defaultLayout: null,
 }))
 app.use(json(null))
-//noinspection JSUnusedGlobalSymbols
 app.use(bodyparser({
-  onerror: function (err, ctx) {
+  onerror: function onerror(err, ctx) {
     // HTTP Error: 422 Unprocessable Entity
     ctx.throw('body parse error', 422)
-  }
+  },
 }))
 
 // Sessions
@@ -63,31 +61,28 @@ app.use(session())
 
 // Initialize static file path map
 staticMap.init([
-  path.join(staticPath, 'manifest/manifest.json')
+  path.join(staticPath, 'manifest/manifest.json'),
 ])
 
 // Init passport
 passport.init(app)
 
 // mount root routes
-var router = require('./lib/routes').router
+const router = require('./lib/routes').router
+
 app.use(router.routes())
 
 // Not Found 404
 app.use(function* pageNotFound() {
-  //noinspection JSUnusedGlobalSymbols
   this.status = 404
-  if(this.request.method.toUpperCase() == 'GET'){
+  if (this.request.method.toUpperCase() === 'GET') {
     return yield this.render('404')
-  }else{
-    //noinspection JSUnusedGlobalSymbols
-    return this.body = 'Not Found'
   }
+  return yield (this.body = 'Not Found')
 })
 
 // error
-//noinspection JSUnresolvedFunction
-app.on('error', function(err, ctx){
+app.on('error', (err, ctx) => {
   logger.error('server error.\n', err.stack, '\ncontext: ', JSON.stringify(ctx))
 })
 

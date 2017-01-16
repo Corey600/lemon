@@ -8,14 +8,12 @@
 
 'use strict'
 
-const path = require('path')
-
 module.exports = {
   // 应用
   app: 'lemon-server',
   configPath: __filename,
   server: {
     // 运行端口，必要，无默认值
-    port: 3500
-  }
+    port: 3500,
+  },
 }

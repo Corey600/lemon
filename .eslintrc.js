@@ -1,33 +1,18 @@
-
-// const config = require('./build/eslintrc')
-//
-// module.exports = config.getNode()
+"use strict"
 
 module.exports = {
-  "parserOptions": {
-    "ecmaVersion": 6,
-    "sourceType": "module"
-  },
-
-  "env": {
-    "es6": true,
-    "node": true
-  },
-
-  "globals": {
-    "document": false,
-    "navigator": false,
-    "window": false
-  },
-
-  "rules": {
-    "indent": ["error", 2, {"SwitchCase": 1}],
-    "linebreak-style": ["error", "unix"],
-    "quotes": ["error", "single"],
-    "semi": ["error", "never"],
-    "object-curly-spacing": ["warn", "always", {"objectsInObjects": false}],
-    "no-debugger": "error",
-    "no-alert": "error",
-    "no-console": "warn"
-  }
-}
+    "extends": "airbnb",
+    "installedESLint": true,
+    "env": {
+      "browser": false,
+      "node": true,
+    },
+    "rules": {
+      "linebreak-style": ["error", "unix"],
+      "semi": ["error", "never"],
+      "strict": ["off", "global"],
+    },
+    "plugins": [
+        "react"
+    ],
+};
