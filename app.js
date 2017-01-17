@@ -19,12 +19,14 @@ const sta = require('koa-static')
 const json = require('koa-json')
 const bodyparser = require('koa-bodyparser')
 const session = require('koa-generic-session')
+const redisStore = require('koa-redis')
 
 // require custom modules
 const hbs = require('./lib/common/hbs').hbs
 const log = require('./lib/common/log')
 const staticMap = require('./lib/common/static-map')
 const passport = require('./lib/common/passport')
+const redis = require('./lib/common/redis')
 
 const app = new Koa()
 const logger = log.getLogger(__filename)
@@ -56,8 +58,12 @@ app.use(bodyparser({
 }))
 
 // Sessions
-app.keys = ['secret']
-app.use(session())
+app.keys = ['lemon-session-secret']
+app.use(session({
+  store: redisStore({
+    client: redis,
+  }),
+}))
 
 // Initialize static file path map
 staticMap.init([
