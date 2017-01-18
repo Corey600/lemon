@@ -38,11 +38,23 @@ module.exports = {
   // 静态文件路径映射表缓存时间，单位分钟min，0min为不缓存
   staticMapCacheTime: 0,
 
-  // github 认证配置
+  // 服务使用github账户体系
   github: {
+    // github 认证配置
     clientID: '5ee8e382b1aa8abd5bb3',
     clientSecret: 'f688d6cd0e22abe11172c571f5593d2d8880c4d0',
     callbackURL: 'http://127.0.0.1:3500/auth/github/callback',
+
+    // api 地址
+    apiUrl: 'https://api.github.com',
+    // 读取的github仓库名称
+    repository: 'lemon-posts',
+  },
+
+  // 管理员用户
+  superUser: {
+    // username: email
+    Corey600: 'fcx600@163.com',
   },
 
   redis: {
