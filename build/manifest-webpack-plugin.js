@@ -7,15 +7,30 @@
 const fs = require('fs')
 const path = require('path')
 
-const tempPath = path.resolve(__dirname, '../')
+/**
+ * 用于匹配的数组常量
+ * @type {Array}
+ */
+const MATCH = [
+  {
+    reg: /.js$/i,
+    exts: ['jsx', 'js'],
+  }, {
+    reg: /.css$/i,
+    exts: ['less', 'scss', 'css'],
+  },
+]
 
 /**
  * webpack 生成 manifest 插件
  * @param {Sriing} filename 生成的 manifest 文件名
+ * @param {Sriing} src 源文件目录
+ * @param {Sriing} logger 用于打印日志
  */
-function ManifestWebpackPlugin(filename, gutil) {
+function ManifestWebpackPlugin(filename, src, logger) {
   this.filename = filename
-  this.gutil = gutil
+  this.src = src
+  this.logger = logger
 }
 
 /**
@@ -24,38 +39,36 @@ function ManifestWebpackPlugin(filename, gutil) {
  */
 ManifestWebpackPlugin.prototype.apply = function apply(compiler) {
   const that = this
+
+  //  处理资源
   compiler.plugin('emit', (compilation, callback) => {
+    const src = this.src || ''
     const obj = {}
-    const chunks = compilation.chunks
-    chunks.forEach((item/* , idx */) => {
-      const files = item.files
-      for (let i = 0; i < files.length; i += 1) {
-        if (/.js$/i.test(files[i])) {
-          if (fs.existsSync(path.resolve(tempPath, `${item.name}.jsx`))) {
-            obj[`${item.name}.jsx`] = files[i]
-          } else {
-            obj[`${item.name}.js`] = files[i]
-          }
-        } else if (/.css$/i.test(files[i])) {
-          if (fs.existsSync(path.resolve(tempPath, `${item.name}.less`))) {
-            obj[`${item.name}.less`] = files[i]
-          } else if (fs.existsSync(path.resolve(tempPath, `${item.name}.scss`))) {
-            obj[`${item.name}.scss`] = files[i]
-          } else {
-            obj[`${item.name}.css`] = files[i]
-          }
-        }
-      }
-    })
-    const manifestPath = path.dirname(that.filename)
-    fs.mkdir(manifestPath, 0o755, () => {
-      that.gutil.log('create webpack-manifest file...')
-      fs.writeFile(path.resolve(that.filename), JSON.stringify(obj, null, 2), (e) => {
-        if (e) throw e
+    compilation.chunks.forEach((chunk) => {
+      chunk.files.forEach((file) => {
+        const match = MATCH.find(item => item.reg.test(file))
+        if (!match) return
+        const ext = match.exts.find(
+          item => fs.existsSync(path.resolve(src, `${chunk.name}.${item}`)))
+        if (!ext) return
+        obj[`${chunk.name}.${ext}`] = file
       })
     })
 
-    callback()
+    // 写文件
+    const manifestPath = path.dirname(that.filename || '')
+    fs.mkdir(manifestPath, 0o755, () => {
+      if (that.logger) {
+        that.logger.log('[webpack] create webpack-manifest file...')
+      }
+      fs.writeFile(path.resolve(that.filename), JSON.stringify(obj, null, 2), (e) => {
+        if (e) {
+          callback(e)
+        } else {
+          callback()
+        }
+      })
+    })
   })
 }
 
@@ -64,34 +77,3 @@ ManifestWebpackPlugin.prototype.apply = function apply(compiler) {
  * @type {ManifestWebpackPlugin}
  */
 module.exports = ManifestWebpackPlugin
-
-/*
-function FileListPlugin(options) {}
-
-FileListPlugin.prototype.apply = function(compiler) {
-  compiler.plugin('emit', function(compilation, callback) {
-    // Create a header string for the generated file:
-    var filelist = 'In this build:\n\n'
-
-    // Loop through all compiled assets,
-    // adding a new line item for each filename.
-    for (var filename in compilation.assets) {
-      filelist += ('- '+ filename +'\n')
-    }
-
-    // Insert this list into the Webpack build as a new file asset:
-    compilation.assets['filelist.md'] = {
-      source: function() {
-        return filelist
-      },
-      size: function() {
-        return filelist.length
-      }
-    }
-
-    callback()
-  })
-}
-
-module.exports = FileListPlugin
-*/

@@ -82,7 +82,9 @@ app.use(router.routes())
 app.use(function* pageNotFound() {
   this.status = 404
   if (this.request.method.toUpperCase() === 'GET') {
-    return yield this.render('404')
+    return yield this.render('404', {
+      title: 'Not Found',
+    })
   }
   return yield (this.body = 'Not Found')
 })

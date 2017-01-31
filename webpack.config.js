@@ -62,7 +62,8 @@ function getWebpackConfig(src, dest) {
       // 将样式抽离出来作为单独的文件
       new ExtractTextPlugin('[name]-[contenthash:8].css'),
       // 输出 manifest 文件
-      new ManifestWebpackPlugin(path.resolve(dest, 'manifest/manifest.json'), gutil),
+      new ManifestWebpackPlugin(path.resolve(dest, 'manifest/manifest.json'),
+        src, gutil),
     ],
   }
 
